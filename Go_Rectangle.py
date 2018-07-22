@@ -11,7 +11,6 @@ y=50
 width = 40
 height = 40
 velocity = 5
-
 run = True
 while run:
     pygame.time.delay(100)
