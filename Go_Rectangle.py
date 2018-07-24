@@ -9,15 +9,28 @@ win = pygame.display.set_mode((screenWidth, screenHeight))
 
 pygame.display.set_caption("Go Rectangle Go")
 
-x=50
-y=500
-width = 20
-height = 20
-velocity = 10
-run = True
+clock = pygame.time.Clock()
 
+
+class Player(object):
+    def __init__(self, x, y, width, height):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.velocity = 5
+
+
+def redrawGameWindow():
+    win.fill((0, 0, 0))
+    pygame.draw.rect(win, (139, 157, 186), (champion.x, champion.y, champion.width, champion.height))
+    pygame.display.update()
+
+
+run = True
+champion = Player(50, 500, 20, 20)
 while run:
-    pygame.time.delay(100)
+    clock.tick(60)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -25,17 +38,15 @@ while run:
 
     keys = pygame.key.get_pressed()
 
-    if keys[pygame.K_LEFT] and x > 0:
-        x -= velocity
-    if keys[pygame.K_RIGHT] and x < screenWidth-width:
-        x += velocity
-    if keys[pygame.K_UP] and y > 0:
-        y -= velocity
-    if keys[pygame.K_DOWN] and y < screenHeight-height:
-        y += velocity
+    if keys[pygame.K_LEFT] and champion.x > 0:
+        champion.x -= champion.velocity
+    if keys[pygame.K_RIGHT] and champion.x < screenWidth-champion.width:
+        champion.x += champion.velocity
+    if keys[pygame.K_UP] and champion.y > 0:
+        champion.y -= champion.velocity
+    if keys[pygame.K_DOWN] and champion.y < screenHeight-champion.height:
+        champion.y += champion.velocity
 
-    win.fill((0,0,0))
-    pygame.draw.rect(win, (139, 157, 186), (x, y, width, height))
-    pygame.display.update()
+    redrawGameWindow()
 
 pygame.quit()
