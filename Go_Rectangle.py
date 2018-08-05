@@ -101,7 +101,6 @@ obstacles12 = Obstacles(3, 260, 180)
 obstacles13 = Obstacles(0, 450, 0)
 obstacles14 = Obstacles(0, 650, 100)
 
-
 while run:
     clock.tick(60)
 
