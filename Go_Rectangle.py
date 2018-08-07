@@ -1,4 +1,5 @@
 import pygame
+from tkinter import messagebox
 
 pygame.init()
 
@@ -15,7 +16,6 @@ winner = pygame.image.load("images/winner.png")
 clock = pygame.time.Clock()
 
 
-
 class Player(object):
 
     def __init__(self, x, y, width, height):
@@ -29,7 +29,6 @@ class Player(object):
     def draw(self, win):
         win.blit(character, (self.x, self.y))
         self.hitbox = self.x, self.y, self.width, self.height
-        pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2)
 
 
 class Obstacles(object):
@@ -52,13 +51,13 @@ class Obstacles(object):
     def draw(self, win):
         win.blit(self.obstacles_img[self.index], (self.x, self.y))
         if self.index == 0:
-            pygame.draw.rect(win, (0, 255, 0),self.hitbox0, 2)
+            self.hitbox = self.hitbox0
         elif self.index == 1:
-            pygame.draw.rect(win, (0, 255, 0), self.hitbox1, 2)
+            self.hitbox = self.hitbox1
         elif self.index == 2:
-            pygame.draw.rect(win, (0, 255, 0), self.hitbox2, 2)
+            self.hitbox = self.hitbox2
         elif self.index == 3:
-            pygame.draw.rect(win, (0, 255, 0),self.hitbox3 , 2)
+            self.hitbox = self.hitbox3
 
 
 def redrawGameWindow():
@@ -82,7 +81,18 @@ def redrawGameWindow():
     obstacles14.draw(win)
     pygame.display.update()
 
+#change for rect for colission detection
+def get_rect(rect):
+    return pygame.Rect(rect)
+
+def check_has_won(rect):
+    if rect[0] >= 700 and rect[1] <= 80:
+        messagebox.showinfo("Congratulations", "You won the game!")
+        champion.x = 50
+        champion.y = 500
+
 #mainloop
+has_won = False
 run = True
 champion = Player(50, 500, 20, 20)
 obstacles0 = Obstacles(0, 100, 450)
@@ -110,15 +120,26 @@ while run:
 
     keys = pygame.key.get_pressed()
 
-    if keys[pygame.K_LEFT] and champion.x > 0:
-        champion.x -= champion.velocity
-    if keys[pygame.K_RIGHT] and champion.x < screenWidth-champion.width:
-        champion.x += champion.velocity
-    if keys[pygame.K_UP] and champion.y > 0:
-        champion.y -= champion.velocity
-    if keys[pygame.K_DOWN] and champion.y < screenHeight-champion.height:
-        champion.y += champion.velocity
+    if any([get_rect(champion.hitbox).colliderect(get_rect(obstacles0.hitbox0)), get_rect(champion.hitbox).colliderect(get_rect(obstacles1.hitbox1)),
+            get_rect(champion.hitbox).colliderect(get_rect(obstacles2.hitbox2)), get_rect(champion.hitbox).colliderect(get_rect(obstacles3.hitbox3)),
+            get_rect(champion.hitbox).colliderect(get_rect(obstacles4.hitbox0)), get_rect(champion.hitbox).colliderect(get_rect(obstacles5.hitbox0)),
+            get_rect(champion.hitbox).colliderect(get_rect(obstacles6.hitbox3)), get_rect(champion.hitbox).colliderect(get_rect(obstacles7.hitbox2)),
+            get_rect(champion.hitbox).colliderect(get_rect(obstacles8.hitbox1)), get_rect(champion.hitbox).colliderect(get_rect(obstacles9.hitbox0)),
+            get_rect(champion.hitbox).colliderect(get_rect(obstacles10.hitbox0)), get_rect(champion.hitbox).colliderect(get_rect(obstacles11.hitbox3)),
+            get_rect(champion.hitbox).colliderect(get_rect(obstacles12.hitbox3)), get_rect(champion.hitbox).colliderect(get_rect(obstacles13.hitbox0)),
+            get_rect(champion.hitbox).colliderect(get_rect(obstacles14.hitbox0))]):
+        champion.x, champion.y = 50, 500
+    else:
+        if keys[pygame.K_LEFT] and champion.x > 0:
+            champion.x -= champion.velocity
+        if keys[pygame.K_RIGHT] and champion.x < screenWidth - champion.width:
+            champion.x += champion.velocity
+        if keys[pygame.K_UP] and champion.y > 0:
+            champion.y -= champion.velocity
+        if keys[pygame.K_DOWN] and champion.y < screenHeight - champion.height:
+            champion.y += champion.velocity
 
+    check_has_won(champion.hitbox)
     redrawGameWindow()
 
 
